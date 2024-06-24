@@ -44,8 +44,8 @@ def getInfo(url: str) -> dict:
     talent_data_list = talent_data_box.find_all("dl")
     
     for dl in talent_data_list:
-        dt = dl.find("dt").text
-        dd = dl.find("dd").text
+        dt = dl.find("dt").get_text(strip=True)
+        dd = dl.find("dd").get_text(strip=True)
         result[dt] = dd
 
         if dt == "Illustrator":
