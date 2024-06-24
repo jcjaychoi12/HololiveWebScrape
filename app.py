@@ -39,6 +39,10 @@ def getInfo(url: str) -> dict:
         dd = dl.find("dd").text
         result[dt] = dd
 
+        if dt == "Illustrator":
+            illust_link = dl.find("a").get("href")
+            result["Illustrator Link"] = illust_link
+
     return result
 
 
