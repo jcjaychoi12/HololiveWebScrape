@@ -1,4 +1,5 @@
 import requests
+import re
 from bs4 import BeautifulSoup
 
 
@@ -24,6 +25,14 @@ def getInfo(url: str) -> dict:
 
     soup = BeautifulSoup(r.content, "html.parser")
     talent_article = soup.find("article", class_="in_talent single")
+
+    talent_name = talent_article.find("div", class_="talent_top").find("h1")
+
+    # For some reason, the simple talent_name.get_text(strip=True) returns both the English and Japanese names concatenated
+    # r"^[A-Za-z\s]+&" did not work either
+    talent_name_en = [char for char in talent_name.get_text(strip=True) if "A" <= char <= "Z" or "a" <= char <= "z" or char == " "]
+    result["English Name"] = "".join(talent_name_en)
+    result["Japanese Name"] = talent_name.find("span").get_text(strip=True)
 
     external_links_list = talent_article.find("ul", class_="t_sns clearfix")
     external_links_list_item = [link.find("a").get("href") for link in external_links_list.find_all("li")]
