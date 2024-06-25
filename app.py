@@ -1,5 +1,5 @@
 import requests
-import re
+import concurrent.futures as cf
 from bs4 import BeautifulSoup
 
 
@@ -15,7 +15,17 @@ def main() -> None:
 
     talent_link = [link.find("a").get("href") for link in talent_list_item]
 
-    print(getInfo(talent_link[0]))
+    talent_info = []
+    with cf.ThreadPoolExecutor(max_workers=64) as executor:
+        futures = [executor.submit(getInfo, url) for url in talent_link]
+
+        for future in cf.as_completed(futures):
+            try:
+                talent_info.append(future.result())
+            except Exception as e:
+                print("%r: ERROR -> %s", (future, e))
+
+    print(talent_info)
 
 
 def getInfo(url: str) -> dict:
