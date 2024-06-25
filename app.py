@@ -59,9 +59,9 @@ def getInfo(url: str) -> dict:
         dd = dl.find("dd").get_text(strip=True)
         result[dt] = dd
 
-        if dt == "Illustrator":
-            illust_link = dl.find("a").get("href")
-            result["Illustrator Link"] = illust_link
+        if dl.find("a") is not None:
+            link = dl.find("a").get("href")
+            result[dt + " Link"] = link
 
     return result
 
