@@ -18,7 +18,7 @@ def main() -> None:
 
     talent_info = []
     with cf.ThreadPoolExecutor(max_workers=64) as executor:
-        futures = [executor.submit(getInfo, url) for url in talent_link]
+        futures = [executor.submit(getInfo, url, talent_link.index(url)) for url in talent_link]
 
         for future in cf.as_completed(futures):
             try:
@@ -29,8 +29,8 @@ def main() -> None:
     print(talent_info)
 
 
-def getInfo(url: str) -> dict:
-    result: dict = {}
+def getInfo(url: str, url_index: int) -> dict:
+    result: dict = {"Index": url_index}
 
     r = requests.get(url)
 
