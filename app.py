@@ -1,4 +1,5 @@
 import requests
+import re
 import concurrent.futures as cf
 from bs4 import BeautifulSoup
 
@@ -40,7 +41,7 @@ def getInfo(url: str) -> dict:
 
     # For some reason, the simple talent_name.get_text(strip=True) returns both the English and Japanese names concatenated
     # r"^[A-Za-z\s]+&" did not work either
-    talent_name_en = [char for char in talent_name.get_text(strip=True) if "A" <= char <= "Z" or "a" <= char <= "z" or char == " "]
+    talent_name_en = [re.sub(r"^Alum ", "", char) for char in talent_name.get_text(strip=True) if "A" <= char <= "Z" or "a" <= char <= "z" or char == " "]
     result["English Name"] = "".join(talent_name_en)
     result["Japanese Name"] = talent_name.find("span").get_text(strip=True)
 
