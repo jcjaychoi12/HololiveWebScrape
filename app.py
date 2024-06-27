@@ -52,7 +52,7 @@ def getInfo(url: str, url_index: int) -> dict:
         talent_name_en_final = talent_name_en_joined[4:].strip()
         result["Status"] = "Alumni"
 
-    result["English Name"] = talent_name_en_final
+    result["English Name"] = talent_name_en_final if talent_name_en_final[0:4] != "IRyS" else "IRyS"
     result["Japanese Name"] = talent_name.find("span").get_text(strip=True)
 
     external_links_list = talent_article.find("ul", class_="t_sns clearfix")
