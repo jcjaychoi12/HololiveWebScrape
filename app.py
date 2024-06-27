@@ -26,7 +26,7 @@ def main() -> None:
             except Exception as e:
                 print("%r: ERROR -> %s", (future, e))
 
-    print(talent_info)
+    print(sorted(talent_info, key=lambda entry: entry["Index"]))
 
 
 def getInfo(url: str, url_index: int) -> dict:
@@ -41,8 +41,18 @@ def getInfo(url: str, url_index: int) -> dict:
 
     # For some reason, the simple talent_name.get_text(strip=True) returns both the English and Japanese names concatenated
     # r"^[A-Za-z\s]+&" did not work either
-    talent_name_en = [re.sub(r"^Alum ", "", char) for char in talent_name.get_text(strip=True) if "A" <= char <= "Z" or "a" <= char <= "z" or char == " "]
-    result["English Name"] = "".join(talent_name_en)
+    talent_name_en = [re.sub("Alum ", "", char) for char in talent_name.get_text(strip=True) if "A" <= char <= "Z" or "a" <= char <= "z" or char == " "]
+    talent_name_en_joined = "".join(talent_name_en)
+    talent_name_en_final = ""
+
+    if talent_name_en_joined[0:4] != "Alum":
+        talent_name_en_final = talent_name_en_joined
+        result["Status"] = "Active"
+    else:
+        talent_name_en_final = talent_name_en_joined[4:].strip()
+        result["Status"] = "Alumni"
+
+    result["English Name"] = talent_name_en_final
     result["Japanese Name"] = talent_name.find("span").get_text(strip=True)
 
     external_links_list = talent_article.find("ul", class_="t_sns clearfix")
